@@ -4382,7 +4382,6 @@ function Invoke-SearchUserAttributes{
         Write-Host -ForegroundColor yellow "[*] Using the provided access tokens."
     }
     else{
-         # Login
          Write-Host -ForegroundColor yellow "[*] First, you need to login." 
          Write-Host -ForegroundColor yellow "[*] If you already have tokens you can use the -Tokens parameter to pass them to this function."
          while($auth -notlike "Yes"){
@@ -4411,7 +4410,6 @@ function Invoke-SearchUserAttributes{
     $usersEndpoint = "https://graph.microsoft.com/v1.0/users"
     $graphApiUrl = "https://graph.microsoft.com/v1.0"
     Write-Host "[*] Now searching each user attribute for the term $searchTerm"
-    # Query users
     Write-Host "[*] Gathering the users from the tenant."
     do{
         
@@ -4425,7 +4423,6 @@ function Invoke-SearchUserAttributes{
             $uri = ($graphApiUrl + "/users/" + $userId + $attributes)
             $userAttributesResponse = Invoke-RestMethod -Uri $uri -Headers $headers
             $upn = $userAttributesResponse.UserPrincipalName
-            # Search through attributes (excluding @odata.context)
             $propertiesToSearch = $userAttributesResponse.PSObject.Properties | Where-Object { $_.Name -ne "@odata.context" }
             foreach ($property in $propertiesToSearch) {
                 $propertyName = $property.Name
@@ -4443,7 +4440,6 @@ function Invoke-SearchUserAttributes{
             $usersEndpoint = $usersResponse.'@odata.nextLink'
         }
         else {
-            # No more pages, exit loop
             break
         }
     } while ($true)
